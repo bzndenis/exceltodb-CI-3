@@ -166,7 +166,6 @@ Security
 * File type validation
 * Error handling and logging
 
-If you discover any security issues, please email security@yourdomain.com
 
 ***************
 Credits
