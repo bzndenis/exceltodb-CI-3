@@ -72,16 +72,17 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <?php 
-                                // Tampilkan maksimal 5 baris preview
-                                $preview_rows = array_slice($excel_data, 1, 5, true);
+                                // Tampilkan 25 baris preview teratas (sebelumnya 5)
+                                $preview_rows = array_slice($excel_data, 1, 25, true);
                                 foreach($preview_rows as $row): 
                                 ?>
                                     <tr>
                                         <?php for($i = 0; $i < $column_count; $i++): 
                                             $column_letter = chr(65 + $i);
+                                            $cell_value = isset($row[$column_letter]) ? $row[$column_letter] : '';
                                         ?>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                <?php echo isset($row[$column_letter]) ? $row[$column_letter] : ''; ?>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <?php echo htmlspecialchars($cell_value); ?>
                                             </td>
                                         <?php endfor; ?>
                                     </tr>
