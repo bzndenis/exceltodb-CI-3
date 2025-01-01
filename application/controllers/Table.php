@@ -57,4 +57,51 @@ class Table extends CI_Controller {
         
         redirect("table/view/$table_name");
     }
+    
+    public function download_sql($table_name) {
+        // Sanitasi nama tabel
+        $table_name = preg_replace('/[^a-zA-Z0-9_]/', '', $table_name);
+        
+        // Ambil struktur dan data tabel
+        $table_structure = $this->table_model->get_table_structure($table_name);
+        $table_data = $this->table_model->get_data($table_name);
+        
+        // Generate SQL content
+        $sql_content = "-- Database dump for table `{$table_name}`\n";
+        $sql_content .= "-- Generated on " . date('Y-m-d H:i:s') . "\n\n";
+        
+        // Drop table if exists
+        $sql_content .= "DROP TABLE IF EXISTS `{$table_name}`;\n\n";
+        
+        // Create table structure
+        $sql_content .= $table_structure . ";\n\n";
+        
+        // Insert data
+        if (!empty($table_data)) {
+            $sql_content .= "-- Dumping data for table `{$table_name}`\n";
+            $sql_content .= "INSERT INTO `{$table_name}` VALUES\n";
+            
+            $rows = [];
+            foreach ($table_data as $row) {
+                $values = array_map(function($value) {
+                    if ($value === null) {
+                        return 'NULL';
+                    }
+                    return "'" . addslashes($value) . "'";
+                }, $row);
+                $rows[] = "(" . implode(", ", $values) . ")";
+            }
+            
+            $sql_content .= implode(",\n", $rows) . ";\n";
+        }
+        
+        // Set headers for download
+        header('Content-Type: application/sql');
+        header('Content-Disposition: attachment; filename="' . $table_name . '_' . date('Y-m-d') . '.sql"');
+        header('Content-Length: ' . strlen($sql_content));
+        
+        // Output SQL content
+        echo $sql_content;
+        exit;
+    }
 } 

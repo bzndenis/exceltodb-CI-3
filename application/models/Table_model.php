@@ -18,4 +18,10 @@ class Table_model extends CI_Model {
     public function delete_row($table_name, $id) {
         return $this->db->delete($table_name, ['id' => $id]);
     }
+    
+    public function get_table_structure($table_name) {
+        $query = $this->db->query("SHOW CREATE TABLE `$table_name`");
+        $row = $query->row_array();
+        return $row['Create Table'];
+    }
 } 
