@@ -1,71 +1,154 @@
+Here's the GitHub-style description for Excel2DB:
+
 ###################
-What is CodeIgniter
+What is Excel2DB?
 ###################
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+Excel2DB is a powerful web application built with CodeIgniter that converts Excel files into database tables. It provides an intuitive interface for uploading Excel files, previewing data, and managing database tables with advanced features for data manipulation. The application aims to simplify the process of importing Excel data into databases while maintaining data integrity and providing powerful management tools.
 
 *******************
-Release Information
+Key Features
 *******************
 
-This repo contains in-development code for future releases. To download the
-latest stable release please visit the `CodeIgniter Downloads
-<https://codeigniter.com/download>`_ page.
+- Excel file upload with drag & drop support (.xlsx, .xls)
+- Data preview before import
+- Custom table and column naming
+- Interactive data table management
+- Inline cell editing
+- SQL file export
+- Responsive design with Tailwind CSS
+- Real-time data validation
+- Secure data handling
 
 **************************
-Changelog and New Features
-**************************
-
-You can find a list of all changes for each release in the `user
-guide change log <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/changelog.rst>`_.
-
-*******************
 Server Requirements
-*******************
+**************************
 
-PHP version 5.6 or newer is recommended.
-
-It should work on 5.3.7 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
+- PHP version 7.4 or newer
+- MySQL 5.7 or newer / MariaDB 10.3 or newer
+- Composer for dependency management
+- Modern web browser with JavaScript enabled
 
 ************
 Installation
 ************
 
-Please see the `installation section <https://codeigniter.com/userguide3/installation/index.html>`_
-of the CodeIgniter User Guide.
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/excel2db.git
+   ```
+
+2. Install dependencies
+   ```bash
+   composer install
+   ```
+
+3. Configure database in `application/config/database.php`
+   ```php
+   $db['default'] = array(
+       'hostname' => 'your_hostname',
+       'username' => 'your_username',
+       'password' => 'your_password',
+       'database' => 'your_database'
+   );
+   ```
+
+4. Set base URL in `application/config/config.php`
+   ```php
+   $config['base_url'] = 'http://your-domain.com/';
+   ```
+
+5. Create uploads directory and ensure it's writable
+   ```bash
+   mkdir uploads
+   chmod 777 uploads
+   ```
 
 *******
 License
 *******
 
-Please see the `license
-agreement <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/license.rst>`_.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 *********
 Resources
 *********
 
--  `User Guide <https://codeigniter.com/docs>`_
--  `Contributing Guide <https://github.com/bcit-ci/CodeIgniter/blob/develop/contributing.md>`_
--  `Language File Translations <https://github.com/bcit-ci/codeigniter3-translations>`_
--  `Community Forums <http://forum.codeigniter.com/>`_
--  `Community Wiki <https://github.com/bcit-ci/CodeIgniter/wiki>`_
--  `Community Slack Channel <https://codeigniterchat.slack.com>`_
+- Built with CodeIgniter 3
+- Styled with Tailwind CSS
+- Uses PHPSpreadsheet for Excel processing
+- SweetAlert2 for notifications
 
-Report security issues to our `Security Panel <mailto:security@codeigniter.com>`_
-or via our `page on HackerOne <https://hackerone.com/codeigniter>`_, thank you.
+***************
+Project Structure
+***************
+
+```
+excel2db/
+├── application/
+│   ├── controllers/
+│   │   ├── Excel.php
+│   │   └── Table.php
+│   ├── models/
+│   │   ├── Excel_model.php
+│   │   └── Table_model.php
+│   └── views/
+│       ├── excel_upload.php
+│       ├── excel_preview.php
+│       └── table_view.php
+├── uploads/
+└── assets/
+```
+
+***************
+Usage Examples
+***************
+
+1. Upload Excel File
+   ```php
+   // Controller: Excel.php
+   public function upload() {
+       // Handle file upload
+       $config['upload_path'] = './uploads/';
+       $config['allowed_types'] = 'xlsx|xls';
+       $this->load->library('upload', $config);
+   }
+   ```
+
+2. Export SQL
+   ```php
+   // Controller: Table.php
+   public function download_sql($table_name) {
+       // Generate SQL file
+       $table_structure = $this->table_model->get_table_structure($table_name);
+       $table_data = $this->table_model->get_data($table_name);
+   }
+   ```
 
 ***************
 Acknowledgement
 ***************
 
-The CodeIgniter team would like to thank EllisLab, all the
-contributors to the CodeIgniter project and you, the CodeIgniter user.
+Special thanks to:
+- CodeIgniter Team
+- PHPSpreadsheet Contributors
+- Tailwind CSS Team
+- All contributors to this project
+
+***************
+Contributing
+***************
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+
+***************
+Support
+***************
+
+For support, please open an issue in the GitHub repository or contact the maintainers directly.
