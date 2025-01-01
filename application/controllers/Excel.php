@@ -83,6 +83,13 @@ class Excel extends CI_Controller {
             return;
         }
         
+        // Pastikan excel_data memiliki setidaknya satu baris (header)
+        if (!isset($data['excel_data'][1])) {
+            $this->session->set_flashdata('error', 'Format Excel tidak valid');
+            redirect('excel');
+            return;
+        }
+        
         $this->load->view('excel_preview', $data);
     }
 
@@ -98,22 +105,20 @@ class Excel extends CI_Controller {
         }
         
         try {
-            // Buat tabel baru
             if (!$this->excel_model->create_table($table_name, $columns)) {
                 throw new Exception('Gagal membuat tabel');
             }
             
-            // Masukkan data
             if (!$this->excel_model->insert_data($table_name, $excel_data, $columns)) {
                 throw new Exception('Gagal memasukkan data');
             }
             
             $this->session->set_flashdata('success', 'Data berhasil disimpan ke database');
+            redirect("table/view/$table_name");
             
         } catch (Exception $e) {
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
+            redirect('excel');
         }
-        
-        redirect('excel');
     }
 } 

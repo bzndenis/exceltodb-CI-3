@@ -15,8 +15,11 @@ class Excel_model extends CI_Model {
             `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
             
         foreach ($columns as $column) {
-            // Sanitasi nama kolom
+            // Sanitasi nama kolom dan tambahkan prefix 'col_' jika kolom berupa angka
             $column = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
+            if (is_numeric($column)) {
+                $column = 'col_' . $column;
+            }
             $sql .= "\n `$column` VARCHAR(255),";
         }
         
@@ -33,14 +36,18 @@ class Excel_model extends CI_Model {
         // Skip baris header
         unset($excel_data[1]);
         
+        // Modifikasi nama kolom untuk angka
+        $modified_columns = array_map(function($column) {
+            $column = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
+            return is_numeric($column) ? 'col_' . $column : $column;
+        }, $columns);
+        
         $batch_data = array();
         foreach ($excel_data as $row) {
             $data = array();
             $i = 0;
-            foreach ($columns as $column) {
-                // Sanitasi nama kolom
-                $column = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
-                $data[$column] = $row[chr(65 + $i)] ?? null; // A, B, C, dst
+            foreach ($modified_columns as $column) {
+                $data[$column] = isset($row[chr(65 + $i)]) ? $row[chr(65 + $i)] : null; // A, B, C, dst
                 $i++;
             }
             $batch_data[] = $data;
